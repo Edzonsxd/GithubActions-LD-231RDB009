@@ -13,12 +13,15 @@ runs:
 
     - name: Checkout pipeline repo
       uses: actions/checkout@v6
+      with:
+        clean: false
 
     - name: Clone Test repo
       uses: actions/checkout@v6
       with:
         repository: mtararujs/course-js-api-framework
         path: course-js-api-framework
+        clean: false
 
     - name: Install NPM dependencies
       working-directory: ./course-js-api-framework
