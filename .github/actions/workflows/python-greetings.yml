@@ -1,0 +1,119 @@
+name: Python greetings delivery pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  install-pip-deps:
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Installing all required dependencies for Python virtual environment..."
+      
+      - name: Checkout pipeline repo
+        uses: actions/checkout@v6
+      
+      - name: Clone Python app repo
+        uses: actions/checkout@v6
+        with:
+          repository: mtararujs/python-greetings
+          path: python-greetings
+          
+      - name: Create venv and install dependencies
+        working-directory: ./python-greetings
+        run: |
+          python -m venv venv
+          .\venv\Scripts\python.exe -m pip install -r requirements.txt
+
+  deploy-to-dev:
+    needs: install-pip-deps
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Deploying application to the DEV environment..."
+        
+      - uses: ./.github/actions/deploy
+        with:
+          env_name: dev
+          port: 7001
+
+  tests-on-dev:
+    needs: deploy-to-dev
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Running API tests on the DEV environment..."
+        
+      - uses: ./.github/actions/test
+        with:
+          env_name: dev
+
+  deploy-to-stg:
+    needs: tests-on-dev
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Deploying application to the STG environment..."
+        
+      - uses: ./.github/actions/deploy
+        with:
+          env_name: stg
+          port: 7002
+
+  tests-on-stg:
+    needs: deploy-to-stg
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Running API tests on the STG environment..."
+        
+      - uses: ./.github/actions/test
+        with:
+          env_name: stg
+
+  deploy-to-preprod:
+    needs: tests-on-stg
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Deploying application to the PREPROD environment..."
+        
+      - uses: ./.github/actions/deploy
+        with:
+          env_name: preprod
+          port: 7003
+
+  tests-on-preprod:
+    needs: deploy-to-preprod
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Running API tests on the PREPROD environment..."
+        
+      - uses: ./.github/actions/test
+        with:
+          env_name: preprod
+
+  deploy-to-prod:
+    needs: tests-on-preprod
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Deploying application to the PROD environment..."
+        
+      - uses: ./.github/actions/deploy
+        with:
+          env_name: prod
+          port: 7004
+
+  tests-on-prod:
+    needs: deploy-to-prod
+    runs-on: self-hosted
+    steps:
+      - name: Info output
+        run: echo "Running API tests on the PROD environment..."
+        
+      - uses: ./.github/actions/test
+        with:
+          env_name: prod
