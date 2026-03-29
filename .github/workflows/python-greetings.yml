@@ -10,7 +10,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Installing all required dependencies for Python virtual environment..."
-        shell: bash
       
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
@@ -23,10 +22,9 @@ jobs:
           
       - name: Create venv and install dependencies
         working-directory: ./python-greetings
-        shell: bash
         run: |
           python -m venv venv
-          ./venv/Scripts/python.exe -m pip install -r requirements.txt
+          .\venv\Scripts\python.exe -m pip install -r requirements.txt
 
   deploy-to-dev:
     needs: install-pip-deps
@@ -34,7 +32,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Deploying application to the DEV environment..."
-        shell: bash
         
       - uses: ./.github/actions/deploy
         with:
@@ -47,7 +44,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Running API tests on the DEV environment..."
-        shell: bash
         
       - uses: ./.github/actions/test
         with:
@@ -59,7 +55,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Deploying application to the STG environment..."
-        shell: bash
         
       - uses: ./.github/actions/deploy
         with:
@@ -72,7 +67,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Running API tests on the STG environment..."
-        shell: bash
         
       - uses: ./.github/actions/test
         with:
@@ -84,7 +78,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Deploying application to the PREPROD environment..."
-        shell: bash
         
       - uses: ./.github/actions/deploy
         with:
@@ -97,7 +90,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Running API tests on the PREPROD environment..."
-        shell: bash
         
       - uses: ./.github/actions/test
         with:
@@ -109,7 +101,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Deploying application to the PROD environment..."
-        shell: bash
         
       - uses: ./.github/actions/deploy
         with:
@@ -122,7 +113,6 @@ jobs:
     steps:
       - name: Info output
         run: echo "Running API tests on the PROD environment..."
-        shell: bash
         
       - uses: ./.github/actions/test
         with:

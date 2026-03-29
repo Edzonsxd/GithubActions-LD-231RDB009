@@ -1,5 +1,5 @@
 name: 'Test Microservice'
-description: 'Clones the test repo and runs API tests via Bash'
+description: 'Clones the test repo and runs API tests'
 inputs:
   env_name:
     description: 'Environment name'
@@ -9,7 +9,7 @@ runs:
   steps:
     - name: Info output
       run: echo "Running tests on ${{ inputs.env_name }} environment..."
-      shell: bash
+      shell: powershell
 
     - name: Checkout pipeline repo
       uses: actions/checkout@v6
@@ -23,9 +23,9 @@ runs:
     - name: Install NPM dependencies
       working-directory: ./course-js-api-framework
       run: npm install
-      shell: bash
+      shell: powershell
 
     - name: Run tests
       working-directory: ./course-js-api-framework
       run: npm run greetings greetings_${{ inputs.env_name }}
-      shell: bash
+      shell: powershell
