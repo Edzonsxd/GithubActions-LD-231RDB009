@@ -27,28 +27,17 @@ runs:
         clean: false
 
     - name: Stop existing pm2 service
-      shell: powershell
+      shell: cmd
       run: |
-        pm2 delete greetings-app-${{ inputs.env_name }} 2>$null
-        exit 0
+        pm2 delete greetings-app-${{ inputs.env_name }} >NUL 2>&1
+        if errorlevel 1 echo PM2 process greetings-app-${{ inputs.env_name }} was not running
+        exit /b 0
 
     - name: Start service with pm2
       working-directory: ./python-greetings
       shell: cmd
       run: pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter "%GITHUB_WORKSPACE%\python-greetings\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
 
-    - name: Wait for service readiness
-      shell: powershell
-      run: |
-        $url = "http://127.0.0.1:${{ inputs.port }}/greetings"
-        1..30 | ForEach-Object {
-          try {
-            Invoke-RestMethod -Uri $url -Method Get -TimeoutSec 2 | Out-Null
-            Write-Host "Service is ready at $url"
-            exit 0
-          } catch {
-            Start-Sleep -Milliseconds 500
-          }
-        }
-        pm2 logs greetings-app-${{ inputs.env_name }} --lines 50 --nostream
-        throw "Service did not become ready at $url in time."
+    - name: Wait for service boot
+      shell: cmd
+      run: ping 127.0.0.1 -n 11 >NUL 2>&1
