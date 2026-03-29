@@ -30,7 +30,7 @@ runs:
       shell: cmd
       run: |
         set "RUNNER_TRACKING_ID="
-        pm2 delete greetings-app-${{ inputs.env_name }} >NUL 2>&1
+        call pm2 delete greetings-app-${{ inputs.env_name }} >NUL 2>&1
         exit /b 0
 
     - name: Start service with pm2
@@ -38,7 +38,7 @@ runs:
       shell: cmd
       run: |
         set "RUNNER_TRACKING_ID="
-        pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter "%GITHUB_WORKSPACE%\python-greetings\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
+        call pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter "%GITHUB_WORKSPACE%\python-greetings\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
 
     - name: Wait for service readiness
       shell: cmd
@@ -61,5 +61,5 @@ runs:
         )
 
         echo Service did not become ready on port ${{ inputs.port }}
-        pm2 logs greetings-app-${{ inputs.env_name }} --lines 50 --nostream
+        call pm2 logs greetings-app-${{ inputs.env_name }} --lines 50 --nostream
         exit /b 1
