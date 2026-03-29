@@ -28,12 +28,17 @@ runs:
 
     - name: Stop existing pm2 service
       shell: cmd
-      run: pm2 delete greetings-app-${{ inputs.env_name }} & set "errorlevel=0"
+      run: |
+        set "RUNNER_TRACKING_ID="
+        pm2 delete greetings-app-${{ inputs.env_name }} >NUL 2>&1
+        exit /b 0
 
     - name: Start service with pm2
       working-directory: ./python-greetings
       shell: cmd
-      run: pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter "%GITHUB_WORKSPACE%\python-greetings\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
+      run: |
+        set "RUNNER_TRACKING_ID="
+        pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter "%GITHUB_WORKSPACE%\python-greetings\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
 
     - name: Wait for service readiness
       shell: cmd
