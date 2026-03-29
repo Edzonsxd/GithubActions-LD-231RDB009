@@ -38,4 +38,4 @@ runs:
 # Pagaidu tests ar extra boot laiku
     - name: Wait for service to boot
       shell: cmd
-      run: timeout /t 10 /nobreak > NUL
+      run: timeout /t 10 /nobreak
