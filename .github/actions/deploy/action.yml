@@ -28,10 +28,7 @@ runs:
 
     - name: Stop existing pm2 service
       shell: cmd
-      run: |
-        pm2 delete greetings-app-${{ inputs.env_name }} >NUL 2>&1
-        if errorlevel 1 echo PM2 process greetings-app-${{ inputs.env_name }} was not running
-        exit /b 0
+      run: pm2 delete greetings-app-${{ inputs.env_name }} & set "errorlevel=0"
 
     - name: Start service with pm2
       working-directory: ./python-greetings
