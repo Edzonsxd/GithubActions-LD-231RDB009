@@ -9,7 +9,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Installing all required dependencies for Python virtual environment..."
+        shell: cmd
+        run: echo Installing all required dependencies for Python virtual environment...
       
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
@@ -22,16 +23,18 @@ jobs:
           
       - name: Create venv and install dependencies
         working-directory: ./python-greetings
+        shell: cmd
         run: |
           python -m venv venv
-          .\venv\Scripts\python.exe -m pip install -r requirements.txt
+          venv\Scripts\python.exe -m pip install -r requirements.txt
 
   deploy-to-dev:
     needs: install-pip-deps
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Deploying application to the DEV environment..."
+        shell: cmd
+        run: echo Deploying application to the DEV environment...
         
       - uses: ./.github/actions/deploy
         with:
@@ -43,7 +46,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Running API tests on the DEV environment..."
+        shell: cmd
+        run: echo Running API tests on the DEV environment...
         
       - uses: ./.github/actions/test
         with:
@@ -54,7 +58,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Deploying application to the STG environment..."
+        shell: cmd
+        run: echo Deploying application to the STG environment...
         
       - uses: ./.github/actions/deploy
         with:
@@ -66,7 +71,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Running API tests on the STG environment..."
+        shell: cmd
+        run: echo Running API tests on the STG environment...
         
       - uses: ./.github/actions/test
         with:
@@ -77,7 +83,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Deploying application to the PREPROD environment..."
+        shell: cmd
+        run: echo Deploying application to the PREPROD environment...
         
       - uses: ./.github/actions/deploy
         with:
@@ -89,7 +96,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Running API tests on the PREPROD environment..."
+        shell: cmd
+        run: echo Running API tests on the PREPROD environment...
         
       - uses: ./.github/actions/test
         with:
@@ -100,7 +108,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Deploying application to the PROD environment..."
+        shell: cmd
+        run: echo Deploying application to the PROD environment...
         
       - uses: ./.github/actions/deploy
         with:
@@ -112,7 +121,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Info output
-        run: echo "Running API tests on the PROD environment..."
+        shell: cmd
+        run: echo Running API tests on the PROD environment...
         
       - uses: ./.github/actions/test
         with:

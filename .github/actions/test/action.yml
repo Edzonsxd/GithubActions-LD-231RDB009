@@ -8,8 +8,8 @@ runs:
   using: "composite"
   steps:
     - name: Info output
-      run: echo "Running tests on ${{ inputs.env_name }} environment..."
-      shell: powershell
+      run: echo Running tests on ${{ inputs.env_name }} environment...
+      shell: cmd
 
     - name: Checkout pipeline repo
       uses: actions/checkout@v6
@@ -23,9 +23,9 @@ runs:
     - name: Install NPM dependencies
       working-directory: ./course-js-api-framework
       run: npm install
-      shell: powershell
+      shell: cmd
 
     - name: Run tests
       working-directory: ./course-js-api-framework
       run: npm run greetings greetings_${{ inputs.env_name }}
-      shell: powershell
+      shell: cmd
