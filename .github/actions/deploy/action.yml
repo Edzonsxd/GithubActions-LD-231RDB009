@@ -34,3 +34,8 @@ runs:
       working-directory: ./python-greetings
       shell: cmd
       run: pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter "%GITHUB_WORKSPACE%\python-greetings\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
+
+# Pagaidu tests ar extra boot laiku
+    - name: Wait for service to boot
+      shell: cmd
+      run: timeout /t 10 /nobreak > NUL
