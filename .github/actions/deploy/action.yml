@@ -1,5 +1,5 @@
 name: 'Deploy Microservice'
-description: 'Clones the repo and deploys using pm2 on Windows'
+description: 'Clones the repo and deploys using pm2 on Windows via Bash'
 inputs:
   env_name:
     description: 'Environment name (dev, stg, preprod, prod)'
@@ -11,8 +11,8 @@ runs:
   using: "composite"
   steps:
     - name: Info output
-      run: Write-Host "Deploying to ${{ inputs.env_name }} environment on port ${{ inputs.port }}..."
-      shell: powershell
+      run: echo "Deploying to ${{ inputs.env_name }} environment on port ${{ inputs.port }}..."
+      shell: bash
 
     - name: Checkout pipeline repo
       uses: actions/checkout@v6
@@ -24,10 +24,10 @@ runs:
         path: python-greetings
 
     - name: Stop existing pm2 service
-      run: pm2 delete greetings-app-${{ inputs.env_name }}; if ($LASTEXITCODE -ne 0) { Write-Host "Service not found, continuing..." }
-      shell: powershell
+      run: pm2 delete greetings-app-${{ inputs.env_name }} || true
+      shell: bash
 
     - name: Start service with pm2
       working-directory: ./python-greetings
-      shell: powershell
-      run: pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter venv\Scripts\python.exe -- --port ${{ inputs.port }}
+      shell: bash
+      run: pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter ./venv/Scripts/python.exe -- --port ${{ inputs.port }}
