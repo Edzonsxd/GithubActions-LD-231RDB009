@@ -14,6 +14,10 @@ runs:
       shell: cmd
       run: echo Deploying to ${{ inputs.env_name }} environment on port ${{ inputs.port }}...
 
+    - name: Stop existing pm2 service
+      shell: cmd
+      run: call "%GITHUB_WORKSPACE%\.github\scripts\pm2-stop.cmd" "${{ inputs.env_name }}"
+
     - name: Checkout pipeline repo
       uses: actions/checkout@v6
       with:
@@ -26,40 +30,11 @@ runs:
         path: python-greetings
         clean: false
 
-    - name: Stop existing pm2 service
-      shell: cmd
-      run: |
-        set "RUNNER_TRACKING_ID="
-        call pm2 delete greetings-app-${{ inputs.env_name }} >NUL 2>&1
-        exit /b 0
-
     - name: Start service with pm2
       working-directory: ./python-greetings
       shell: cmd
-      run: |
-        set "RUNNER_TRACKING_ID="
-        call pm2 start app.py --name greetings-app-${{ inputs.env_name }} --interpreter "%GITHUB_WORKSPACE%\python-greetings\venv\Scripts\python.exe" -- --port ${{ inputs.port }}
+      run: call "%GITHUB_WORKSPACE%\.github\scripts\pm2-start.cmd" "${{ inputs.env_name }}" "${{ inputs.port }}" "%GITHUB_WORKSPACE%\python-greetings\venv\Scripts\python.exe"
 
     - name: Wait for service readiness
       shell: cmd
-      run: |
-        setlocal EnableDelayedExpansion
-        set "READY=0"
-
-        for /L %%i in (1,1,30) do (
-          curl -fsS http://127.0.0.1:${{ inputs.port }}/greetings | findstr /C:"Hello from Python App!" >NUL 2>&1 && (
-            set "READY=1"
-            goto :ready
-          )
-          ping 127.0.0.1 -n 2 >NUL 2>&1
-        )
-
-        :ready
-        if "!READY!"=="1" (
-          echo Service is ready on port ${{ inputs.port }}
-          exit /b 0
-        )
-
-        echo Service did not become ready on port ${{ inputs.port }}
-        call pm2 logs greetings-app-${{ inputs.env_name }} --lines 50 --nostream
-        exit /b 1
+      run: call "%GITHUB_WORKSPACE%\.github\scripts\check-greetings-ready.cmd" "${{ inputs.port }}" "${{ inputs.env_name }}"

@@ -30,5 +30,10 @@ runs:
 
     - name: Run tests
       working-directory: ./course-js-api-framework
-      run: npm run greetings greetings_${{ inputs.env_name }}
+      run: npm run greetings -- greetings_${{ inputs.env_name }}
       shell: cmd
+
+    - name: Cleanup deployed app
+      if: ${{ always() }}
+      shell: cmd
+      run: call "%GITHUB_WORKSPACE%\.github\scripts\pm2-stop.cmd" "${{ inputs.env_name }}"

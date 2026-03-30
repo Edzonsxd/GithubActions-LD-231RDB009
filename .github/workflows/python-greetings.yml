@@ -12,6 +12,12 @@ jobs:
         shell: cmd
         run: echo Installing all required dependencies for Python virtual environment...
       
+      - name: Kill leftover processes from previous runs
+        shell: cmd
+        run: |
+          taskkill /IM python.exe /F /T >NUL 2>&1
+          timeout /t 1 /nobreak >NUL 2>&1
+      
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
       
