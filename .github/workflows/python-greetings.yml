@@ -18,7 +18,8 @@ jobs:
           taskkill /IM python.exe /F /T >NUL 2>&1
           timeout /t 1 /nobreak >NUL 2>&1
           exit /b 0
-        clean: false
+        with:
+          clean: false
       
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
