@@ -16,7 +16,8 @@ jobs:
         shell: cmd
         continue-on-error: true
         run: |
-          call pm2 kill >NUL 2>&1
+          set "RUNNER_TRACKING_ID="
+          call pm2 delete all >NUL 2>&1
           taskkill /IM python.exe /F /T >NUL 2>&1
           timeout /t 2 /nobreak >NUL 2>&1
           exit /b 0
