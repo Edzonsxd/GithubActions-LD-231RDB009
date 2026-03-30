@@ -14,21 +14,23 @@ jobs:
       
       - name: Kill leftover processes from previous runs
         shell: cmd
+        #continue-on-error: true
         run: |
           taskkill /IM python.exe /F /T >NUL 2>&1
           timeout /t 1 /nobreak >NUL 2>&1
           exit /b 0
-        with:
-          clean: false
       
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          clean: false
       
       - name: Clone Python app repo
         uses: actions/checkout@v6
         with:
           repository: mtararujs/python-greetings
           path: python-greetings
+          clean: false
           
       - name: Create venv and install dependencies
         working-directory: ./python-greetings
